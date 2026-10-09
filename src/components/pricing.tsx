@@ -14,7 +14,7 @@ const plans = [
 export function Pricing({ onStart }: { onStart: () => void }) {
  const [period, setPeriod] = useState<Period>('Monthly');
  const [currency, setCurrency] = useState<Currency>('USD');
- const money = (value: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency, maximumFractionDigits: 0 }).format(value * rates[currency]);
+ const money = (value: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency, currencyDisplay: 'narrowSymbol', maximumFractionDigits: 0 }).format(value * rates[currency]);
  return <section id="pricing" className="section">
   <div className="pricing-heading"><div className="eyebrow">YOUR GAME. YOUR PLAN.</div><h2>A sharper edge, at every level.</h2><p>Start free. Unlock more when you’re ready.</p></div>
   <div className="pricing-controls"><div className="segmented" aria-label="Billing period">{(['Monthly','Yearly','Lifetime'] as Period[]).map(p => <Button key={p} variant={period === p ? 'segmentActive' : 'segment'} onClick={() => setPeriod(p)} aria-pressed={period === p}>{p}{p === 'Yearly' && <span className="text-primary text-[9px]">−17%</span>}</Button>)}</div><select className="currency-select" aria-label="Display currency" value={currency} onChange={e => setCurrency(e.target.value as Currency)}><option value="USD">USD · $</option><option value="NGN">NGN · ₦</option><option value="EUR">EUR · €</option></select></div>
