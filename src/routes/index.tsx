@@ -1,24 +1,58 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute } from '@tanstack/react-router';
+import { useState, type FormEvent } from 'react';
+import { ArrowUpRight, ArrowRight, Check, ChevronDown, Target, Activity, ShieldCheck, Bell, ChartNoAxesCombined, Layers, LockKeyhole, Menu, X, CircleDot, Dribbble, Trophy, Plus, Sparkles } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Brand } from '@/components/brand';
+import { Pricing } from '@/components/pricing';
+import stadium from '@/assets/stadium.jpg';
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
-export const Route = createFileRoute("/")({
-  component: Index,
+export const Route = createFileRoute('/')({
+ head: () => ({ meta: [
+  { title: 'PrematchPredicts — Your edge before the game' },
+  { name: 'description', content: 'AI and calculation-driven predictions across sports. Explore transparent results, personal trackers, and Premium and Pro plans with a seven-day trial.' },
+  { property: 'og:title', content: 'PrematchPredicts — Your edge before the game' },
+  { property: 'og:description', content: 'Less guesswork. More game intelligence. Explore all-sports predictions and a smarter way to track your performance.' },
+  { property: 'og:type', content: 'website' }, { name: 'twitter:card', content: 'summary_large_image' },
+ ] }), component: Index,
 });
-
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
+const faqs = [
+ ['How are the predictions created?', 'PrematchPredicts uses a model built on AI and calculations to assess sporting events. Predictions are informed estimates, not guarantees of an outcome.'],
+ ['What’s included in the 7-day trial?', 'The trial includes all Premium and Pro features, including detailed analysis, advanced analytics, alerts, and unlimited trackers, for seven days.'],
+ ['What’s the difference between Premium and Pro?', 'Premium includes detailed analysis, advanced analytics, alerts, and up to two personal trackers. Pro includes the same features with unlimited trackers.'],
+ ['How does lifetime access work?', 'The proposed lifetime option is a one-time payment for access to your chosen plan rather than a recurring monthly or yearly subscription. Final terms and availability will be confirmed before payments open.'],
+ ['Are winning predictions guaranteed?', 'No. Every prediction can lose, and past performance does not ensure future results. Set a budget, never chase losses, and only stake what you can afford to lose.'],
+];
 function Index() {
-  return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+ const [auth, setAuth] = useState<'signin'|'signup'|null>(null);
+ const [submitted, setSubmitted] = useState(false);
+ const [menu, setMenu] = useState(false);
+ const [legal, setLegal] = useState<string|null>(null);
+ const openAuth = (mode: 'signin'|'signup') => {setSubmitted(false);setAuth(mode);};
+ const submit = (e: FormEvent) => { e.preventDefault(); setSubmitted(true); };
+ const nav = <><a href="#features" onClick={() => setMenu(false)}>The platform</a><a href="#performance" onClick={() => setMenu(false)}>Performance</a><a href="#pricing" onClick={() => setMenu(false)}>Pricing</a><a href="#faq" onClick={() => setMenu(false)}>FAQs</a></>;
+ return <>
+  <header className="site-header"><Brand /><nav className="nav-links" aria-label="Main navigation">{nav}</nav><div className="header-actions"><Button variant="ghost" className="header-signin text-xs" onClick={() => openAuth('signin')}>Sign in</Button><Button variant="hero" className="text-xs" onClick={() => openAuth('signup')}>Get started<ArrowUpRight /></Button><Button variant="ghost" size="icon" className="mobile-menu" aria-label={menu ? 'Close menu' : 'Open menu'} onClick={() => setMenu(!menu)}>{menu ? <X/> : <Menu/>}</Button></div></header>
+  {menu && <nav className="mobile-nav" aria-label="Mobile navigation">{nav}<a href="#signin" onClick={e => {e.preventDefault();setMenu(false);openAuth('signin');}}>Sign in</a></nav>}
+  <main>
+   <section className="hero"><img className="hero-photo" src={stadium} width={1920} height={1024} alt="An electric-green illuminated football on the pitch in a floodlit stadium" fetchPriority="high" /><div className="hero-content"><div className="eyebrow"><span className="status-dot"/> INTELLIGENCE BEFORE THE WHISTLE</div><h1>Your edge.<br/>Before the game.<br/><em>PrematchPredicts.</em></h1><p className="hero-copy">Less guesswork. More game intelligence.<br/>AI-powered predictions, transparent results, and the tools to make every decision more informed.</p><div className="hero-actions"><Button variant="hero" size="lg" className="h-12 text-xs" onClick={() => openAuth('signup')}>Find your edge — start free<ArrowUpRight /></Button><Button variant="heroOutline" size="lg" className="h-12 text-xs" asChild><a href="#features">Explore the platform<ArrowRight/></a></Button></div><div className="hero-fine"><span><Check/>7-day full-access trial</span><span><Check/>All sports. One platform.</span></div></div><div className="hero-caption"><Activity size={13}/> POWERED BY DATA. BUILT FOR THE GAME.</div></section>
+   <div className="sport-band"><span>ONE PLATFORM.<br/>EVERY ARENA.</span><div className="sport-item"><CircleDot/>Football</div><div className="sport-item"><Dribbble/>Basketball</div><div className="sport-item"><ShieldCheck/>Ice hockey</div><div className="sport-item"><CircleDot/>Tennis</div><div className="sport-item"><Trophy/>Baseball</div><div className="sport-item"><Plus/>And more</div></div>
+   <section id="features" className="section"><div className="section-heading"><div><div className="eyebrow">NOT JUST PICKS. A COMPLETE PICTURE.</div><h2>Built for the way<br/>you read the game.</h2></div><p>From the first prediction to the final result, bring clarity to every part of your game.</p></div>
+    <div className="feature-grid">
+     <article className="feature-card feature-wide"><div><div className="feature-icon"><Target/></div><h3>Insight before kick-off.</h3><p>Daily picks across sports, driven by AI and calculations. Go deeper with premium analysis to understand the reasoning behind each selection.</p><span className="feature-label">AI + DATA-DRIVEN PICKS <ArrowUpRight size={11}/></span></div><div className="pick-preview"><div className="preview-top"><span className="pill">PICK PREVIEW</span><span>ICE HOCKEY</span></div><h4>JYP vs Kiekko-Espoo</h4><p>Liiga · Example from your pick history</p><div className="pick-metrics"><div><span>SELECTION</span><strong>Under 5</strong></div><div><span>ODDS</span><strong className="accent">2.20</strong></div><div><span>MARKET</span><strong>Totals</strong></div></div></div></article>
+     <article className="feature-card"><div className="feature-icon"><ShieldCheck/></div><h3>Every result. On record.</h3><p>Wins, losses, and voids. A clear results calendar that shows the whole picture—not just the highlights.</p><div className="mini-calendar" aria-label="Illustrative results calendar">{['M','T','W','T','F','S','S'].map((v,i) => <span key={'day'+i}>{v}</span>)}{Array.from({length:14},(_,i) => <span key={i} className={i===3||i===8||i===12?'loss':i===6?'':'win'}>{i===3||i===8||i===12?'×':i===6?'−':'✓'}</span>)}</div></article>
+     <article className="feature-card"><div className="feature-icon"><Layers/></div><h3>Your bankroll. Your rules.</h3><p>Keep personal, rollover, and Edidangle trackers in one place. Two with Premium. Unlimited with Pro.</p><div className="mt-5"><div className="tracker-line"><span>Personal trackers</span><strong>2 with Premium</strong></div><div className="tracker-line"><span>Pro tracker limit</span><strong>Unlimited</strong></div></div><span className="feature-label"><LockKeyhole/>PREMIUM + PRO</span></article>
+     <article className="feature-card"><div className="feature-icon"><ChartNoAxesCombined/></div><h3>Look beyond the win rate.</h3><p>Follow your ROI, profit, and performance over time. See your progress from a more useful perspective.</p><svg className="chart-preview" viewBox="0 0 300 90" role="img" aria-label="Illustrative performance trend"><path className="chart-grid" d="M0 20H300 M0 45H300 M0 70H300" strokeDasharray="3 5"/><path className="chart-fill" d="M0 80L20 65L40 72L60 48L80 58L100 45L120 54L140 31L160 42L180 28L200 37L220 16L240 26L260 8L280 18L300 3V90H0Z"/><path className="chart-line" d="M0 80L20 65L40 72L60 48L80 58L100 45L120 54L140 31L160 42L180 28L200 37L220 16L240 26L260 8L280 18L300 3"/></svg><span className="feature-label"><LockKeyhole/>PREMIUM ANALYTICS</span></article>
+     <article className="feature-card"><div className="feature-icon"><Bell/></div><h3>Stay ahead of the action.</h3><p>New picks, straight to your attention. Stay connected to the selections that matter to you.</p><div className="alert-preview"><Bell/><div><strong>A new pick is ready.</strong><span>Your next insight, before the game.</span></div><span className="ml-auto text-muted-foreground text-[8px]">now</span></div><span className="feature-label"><LockKeyhole/>PREMIUM ALERTS</span></article>
     </div>
-  );
+   </section>
+   <section id="performance" className="proof-section"><div className="section proof-inner"><div className="proof-title"><div className="eyebrow">TRANSPARENCY IS THE EDGE.</div><h3>The numbers tell the story.</h3><p>Snapshot from your existing dashboard.<br/>Historical example, not live or independently audited.</p></div><div className="stat"><strong>60.7<span>%</span></strong><span>Recorded win rate</span><small>17 wins · 11 losses</small></div><div className="stat"><strong className="text-primary">+26.2<span>%</span></strong><span>Recorded ROI</span><small>Past performance</small></div><div className="stat"><strong>33</strong><span>Recorded predictions</span><small>Includes 5 pushes / voids</small></div></div></section>
+   <Pricing onStart={() => openAuth('signup')}/>
+   <section id="faq" className="section faq-section"><div><div className="eyebrow">A LITTLE MORE CLARITY.</div><h2>Good questions.<br/>Straight answers.</h2></div><div className="faq-list">{faqs.map(([q,a]) => <details key={q}><summary>{q}<Plus/></summary><p>{a}</p></details>)}</div></section>
+   <section className="final-cta"><div className="eyebrow justify-center"><Sparkles size={13}/> THE NEXT GAME STARTS WITH YOU.</div><h2 className="mt-5">Make your next move informed.</h2><p>A clearer view of the game. An edge worth exploring.</p><Button variant="hero" size="lg" className="h-12 text-xs" onClick={() => openAuth('signup')}>Get started with PrematchPredicts<ArrowUpRight/></Button></section>
+  </main>
+  <footer className="footer"><div className="footer-top"><Brand/><div className="footer-links"><a href="#features">Platform</a><a href="#pricing">Pricing</a><a href="#faq">FAQs</a></div></div><div className="footer-bottom"><span>© 2026 PrematchPredicts. All rights reserved.</span><div className="flex gap-5"><a href="#privacy" onClick={e => {e.preventDefault();setLegal('Privacy');}}>Privacy</a><a href="#terms" onClick={e => {e.preventDefault();setLegal('Terms');}}>Terms</a><span>18+ · Play responsibly</span></div></div><p className="footer-disclaimer">Predictions are informational, not guarantees. Past results do not guarantee future performance. Betting involves risk; only stake what you can afford to lose. PrematchPredicts is not a bookmaker and does not accept wagers.</p></footer>
+  <Dialog open={auth !== null} onOpenChange={open => {if(!open)setAuth(null);}}><DialogContent className="max-w-[420px] w-[calc(100%-32px)]"><div className="auth-logo"><Brand/></div><DialogTitle>{auth === 'signup' ? 'Find your edge.' : 'Welcome back.'}</DialogTitle><DialogDescription>{submitted ? 'Account services are not connected yet. No account was created and no sign-in was performed.' : 'Account preview only. Registration and sign-in will open when account services are connected.'}</DialogDescription>{!submitted && <form onSubmit={submit}>{auth === 'signup' && <label className="auth-field">Display name<input required autoComplete="nickname" placeholder="Your name"/></label>}<label className="auth-field">Email address<input required type="email" autoComplete="email" placeholder="you@example.com"/></label><label className="auth-field">Password<input required type="password" minLength={8} autoComplete={auth === 'signup' ? 'new-password' : 'current-password'} placeholder="At least 8 characters"/></label><Button type="submit" variant="hero" className="w-full h-11 mt-6">{auth === 'signup' ? 'Preview sign up' : 'Preview sign in'}<ArrowRight/></Button></form>}<p className="auth-caption">{auth === 'signup' ? 'Already have an account?' : 'New to PrematchPredicts?'} <Button variant="link" className="h-auto p-0 text-[10px]" onClick={() => openAuth(auth === 'signup' ? 'signin' : 'signup')}>{auth === 'signup' ? 'Sign in' : 'Sign up'}</Button></p></DialogContent></Dialog>
+  <Dialog open={legal !== null} onOpenChange={open => {if(!open)setLegal(null);}}><DialogContent className="w-[calc(100%-32px)]"><DialogTitle>{legal === 'Privacy' ? 'Privacy notice' : 'Terms of use'}</DialogTitle><DialogDescription>{legal === 'Privacy' ? 'This landing-page preview does not create accounts, process payments, or store the information entered in its account forms. The final privacy policy will be provided before those services launch.' : 'This is a preview of the proposed plans and account experience. Prices are suggestions and currency equivalents are illustrative. Subscriptions, trials, and lifetime access cannot be purchased or activated here yet. Final terms will be published before launch.'}</DialogDescription></DialogContent></Dialog>
+ </>;
 }
